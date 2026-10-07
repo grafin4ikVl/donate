@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пополнение баланса | DUX DM</title>
+    <style>
+        :root {
+            --bg-color: #141416;
+            --card-bg: #1a1a1c;
+            --accent-color: #ff7300;
+            --accent-hover: #e06500;
+            --text-color: #ffffff;
+            --text-muted: #7a7a7a;
+            --border-color: #2b2b2f;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh;
+        }
+
+        .donate-container {
+            width: 100%; max-width: 480px;
+            background-color: var(--card-bg);
+            border-radius: 12px; padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            margin: 20px;
+        }
+
+        .header {
+            text-align: center; margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 24px; font-weight: 800; letter-spacing: 1px;
+            color: var(--text-color); margin-bottom: 5px;
+        }
+
+        .logo span { color: var(--accent-color); }
+
+        .title {
+            font-size: 28px; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 2px; text-align: center; margin-bottom: 25px;
+        }
+
+        .grid-methods {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .method-card {
+            background-color: transparent; border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 15px; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center; gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .method-card:hover { border-color: #4a4a50; }
+
+        .method-card.active {
+            border-color: var(--accent-color);
+            background-color: rgba(255, 115, 0, 0.03);
+        }
+
+        .method-icon { font-size: 22px; }
+        .method-name { font-size: 13px; font-weight: 600; color: #d1d1d6; }
+
+        .input-group { margin-bottom: 20px; position: relative; }
+
+        .input-group label {
+            display: block; font-size: 11px; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 6px; font-weight: 700;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%; background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color); border-radius: 6px;
+            padding: 14px 16px; color: var(--text-color); font-size: 15px;
+            box-sizing: border-box; outline: none; transition: border 0.2s;
+        }
+
+        input:focus { border-color: #5a5a62; }
+
+        .calc-info {
+            display: flex; justify-content: space-between; align-items: center;
+            background-color: rgba(0, 0, 0, 0.15); border-radius: 6px;
+            padding: 15px; margin-bottom: 20px; font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .calc-result { font-weight: 700; color: var(--accent-color); }
+
+        .checkbox-container {
+            display: flex; align-items: flex-start; gap: 10px;
+            margin-bottom: 25px; cursor: pointer; user-select: none;
+            font-size: 12px; color: #a1a1a5; line-height: 1.4;
+        }
+
+        .checkbox-container input { margin-top: 2px; accent-color: var(--accent-color); }
+
+        .btn-pay {
+            width: 100%; background-color: var(--accent-color);
+            color: #000000; border: none; border-radius: 6px;
+            padding: 16px; font-size: 16px; font-weight: 700;
+            text-transform: uppercase; cursor: pointer; letter-spacing: 1px;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-pay:hover { background-color: var(--accent-hover); }
+
+        .rate-footer {
+            text-align: center; font-size: 12px; color: var(--text-muted);
+            margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="donate-container">
+    <div class="header">
+        <div class="logo">DUX<span>DM</span></div>
+    </div>
+
+    <div class="title">Пополнение</div>
+
+    <!-- ВСЕ ТРИ КНОПКИ НА МЕСТЕ -->
+    <div class="grid-methods">
+        <div class="method-card active" onclick="selectMethod(this, 'sbp')">
+            <span class="method-icon">📲</span>
+            <span class="method-name">СБП</span>
+        </div>
+        <div class="method-card" onclick="selectMethod(this, 'card')">
+            <span class="method-icon">💳</span>
+            <span class="method-name">Банковская карта</span>
+        </div>
+        <div class="method-card" onclick="selectMethod(this, 'funpay')">
+            <span class="method-icon">🎮</span>
+            <span class="method-name">FunPay</span>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label for="static-id">Static ID (Уникальный ID аккаунта)</label>
+        <input type="text" id="static-id" placeholder="Например: 1405" autocomplete="off">
+    </div>
+
+    <div class="input-group">
+        <label for="sum-input">Сумма пополнения (в рублях)</label>
+        <input type="number" id="sum-input" value="100" min="10" oninput="calculateCoins()">
+    </div>
+
+    <div class="calc-info">
+        <span id="rub-display">100 ₽</span>
+        <span>Вы получите: <span class="calc-result" id="coins-display">200 DP</span></span>
+    </div>
+
+    <label class="checkbox-container">
+        <input type="checkbox" id="agree-checkbox" checked>
+        <span>Принимаю условия пользовательского соглашения</span>
+    </label>
+
+    <button class="btn-pay" onclick="processPayment()">
+        Оплатить заказ <span>→</span>
+    </button>
+
+    <div class="rate-footer">
+        Курс пополнения: 1 ₽ = 2 DP
+    </div>
+</div>
+
+<script>
+    let currentMethod = 'sbp';
+    const rate = 2; 
+    const funpayUrl = "https://funpay.com"; 
+
+    function selectMethod(element, method) {
+        document.querySelectorAll('.method-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        element.classList.add('active');
+        currentMethod = method;
+    }
+
+    function calculateCoins() {
+        const sumInput = document.getElementById('sum-input');
+        const rubDisplay = document.getElementById('rub-display');
+        const coinsDisplay = document.getElementById('coins-display');
+        
+        let value = parseInt(sumInput.value) || 0;
+        
+        rubDisplay.innerText = value + " ₽";
+        coinsDisplay.innerText = (value * rate) + " DP";
+    }
+
+    function processPayment() {
+        const staticId = document.getElementById('static-id').value.trim();
+        const sumValue = parseInt(document.getElementById('sum-input').value) || 0;
+        const isAgreed = document.getElementById('agree-checkbox').checked;
+
+        if (!staticId) {
+            alert("Пожалуйста, введите ваш Static ID с сервера!");
+            return;
+        }
+        if (sumValue < 10) {
+            alert("Минимальная сумма пополнения — 10 рублей.");
+            return;
+        }
+        if (!isAgreed) {
+            alert("Вам необходимо принять условия соглашения.");
+            return;
+        }
+
+        // Подстраиваем текст под выбранный игроком метод
+        let methodText = "";
+        if (currentMethod === 'sbp') methodText = "через СБП на FunPay";
+        else if (currentMethod === 'card') methodText = "банковской картой на FunPay";
+        else methodText = "напрямую через сайт FunPay";
+
+        alert(`Инструкция для оплаты:\n\n1. Сейчас откроется окно вашего лота на FunPay.\n2. Проведите оплату на сумму ${sumValue} ₽ выбранным способом (${methodText}).\n3. В чате к заказу ОБЯЗАТЕЛЬНО напишите продавцу: «Мой ID: ${staticId}».\n\nКак только вы оплатите лот, администратор проверит чат FunPay и мгновенно начислит вам ${sumValue * rate} DP на сервере DUX DM!`);
+        
+        window.open(funpayUrl, '_blank');
+    }
+</script>
+
+</body>
+</html>
+
